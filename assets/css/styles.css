@@ -1397,3 +1397,39 @@ footer{
   .maxximize-m-mark{ height:23px; }
   .maxximize-xx-mark{ height:24px; }
 }
+/* =====================================================================
+   FIX 3 — Client adjustments
+   Homepage-only rules are scoped with #top so the other pages are
+   left exactly as they are.
+   ===================================================================== */
+
+/* 1 — Homepage text beside the photos → same as the Services page
+   (clean navy 18px, not the huge 44px block) */
+#top .method-body-text{
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--navy);
+}
+
+/* 2 — Homepage: smaller, even spacing between the picture+text blocks */
+#top .method.section-pad{ padding: 72px 0; }
+#top .method-row{ margin-bottom: 72px; }
+#top .intro.section-pad{ padding: 72px 0 !important; }
+
+/* 3 — Remove the little dash before every subtitle (eyebrow) label */
+.eyebrow::before{ display: none; }
+
+/* 4 — Bigger header logo (with a matching bump on mobile) */
+.nav-inner{ height: 148px; }
+header .logo img{ height: 124px; }
+@media (max-width: 760px){
+  .nav-inner{ height: 88px; }
+  header .logo img{ height: 60px; }
+}
+
+/* 5 — Homepage top: same light bluish-white background as the inner pages */
+.hero{
+  background: linear-gradient(180deg, #EEF2F7 0%, var(--sand-soft) 100%);
+}
