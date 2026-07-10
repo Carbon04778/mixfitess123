@@ -1433,3 +1433,66 @@ header .logo img{ height: 124px; }
 .hero{
   background: linear-gradient(180deg, #EEF2F7 0%, var(--sand-soft) 100%);
 }
+/* =====================================================================
+   FIX 4 — Cleaner (not cramped) spacing on inner pages.
+   Scoped per page via the active nav link so other pages are untouched.
+   ===================================================================== */
+
+/* SERVICES — smaller gap between each heading and its text,
+   and less space between the Group Classes and Private Sessions blocks */
+body:has(nav a[href="services.html"].active) .section-head{ margin-bottom: 44px !important; }
+body:has(nav a[href="services.html"].active) .section-pad{ padding-bottom: 72px; }
+body:has(nav a[href="services.html"].active) .method.section-pad{ padding-top: 56px !important; }
+
+/* TEACHER TRAINING — trim the big space above "What to Expect"
+   (applies to the "Interested?" section too, and evens the bottom) */
+body:has(nav a[href="teacher-training.html"].active) .method.section-pad{
+  padding-top: 56px !important;
+  padding-bottom: 72px;
+}
+/* =====================================================================
+   FIX 5 — Smaller gap between the page heading/subtitle and the first
+   paragraph beneath it, on Services + Teacher Training. (Adds to FIX 4.)
+   ===================================================================== */
+
+/* Pull the first block up closer to the hero title
+   (Services: "Group Classes" → intro  •  Teacher Training: intro → "THE PROGRAM") */
+body:has(nav a[href="services.html"].active) .page-hero,
+body:has(nav a[href="teacher-training.html"].active) .page-hero{
+  padding-bottom: 40px;
+}
+
+/* Services: tighten the gap under each heading/subtitle
+   (e.g. the "Private Sessions" subtitle → the paragraph below it) */
+body:has(nav a[href="services.html"].active) .section-head{
+  margin-bottom: 28px !important;
+}
+/* =====================================================================
+   FIX 6 — Pricing: match the tighter hero→first-section spacing used
+   on the other inner pages.
+   ===================================================================== */
+
+/* Pull "Memberships" up closer to the hero title */
+body:has(nav a[href="pricing.html"].active) .page-hero{
+  padding-bottom: 40px;
+}
+body:has(nav a[href="pricing.html"].active) .pricing-band.section-pad:first-of-type{
+  padding-top: 56px !important;
+}
+/* =====================================================================
+   FIX 7 — About page:
+   (a) bios use the clean navy 18px text (same as Services/home photos)
+   (b) tighter hero→first-section gap, matching Pricing.
+   ===================================================================== */
+
+/* (a) Bio paragraphs → navy 18px, weight 600 */
+body:has(nav a[href="about.html"].active) .method-text p{
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* (b) Pull the first bio block up closer to the "About Us" hero title */
+body:has(nav a[href="about.html"].active) .page-hero{ padding-bottom: 40px; }
+body:has(nav a[href="about.html"].active) .method.section-pad{ padding-top: 56px !important; }
