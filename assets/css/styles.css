@@ -1,8 +1,26 @@
 /* =====================================================================
-   MIXX FITNESS — SHARED STYLESHEET
-   Used by every page. Edit here once, it updates the whole site.
+   MIXX FITNESS — SHARED STYLESHEET  (clean rebuild)
+   One file for the whole site. Edit here once, it updates every page.
+
+   ORGANISATION
+     1. Tokens / reset
+     2. Image placeholders + motion
+     3. Labels, header, buttons
+     4. Page hero + homepage hero
+     5. PAGE SECTION SYSTEM  <- use this on new/rebuilt pages
+     6. Homepage components
+     7. Shared components (method rows, team, pricing, forms, footer…)
+     8. Responsive
+     9. Page-specific tweaks (homepage / about)
+
+   NOTE ON IMAGES: all studio photos are 700x600 (a 7:6 shape). Image
+   boxes are given that same aspect ratio, so nothing ever gets cropped
+   or "cut off" — see .method-visual / .figure.
    ===================================================================== */
 
+/* =====================================================================
+   1. TOKENS / RESET
+   ===================================================================== */
 :root{
   --navy: #4D6A92;
   --navy-deep: #344A68;
@@ -23,6 +41,9 @@
 
   --container: 1180px;
   --radius: 4px;
+
+  /* the shape of every studio photo (700 x 600) */
+  --photo-ratio: 7 / 6;
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -46,12 +67,9 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 }
 
 /* =====================================================================
-   IMAGE PLACEHOLDER SYSTEM
-   Every spot in this site where a real photo/image should go uses this
-   placeholder so it's obvious in the browser AND in the file.
-   TO REPLACE: delete the .img-placeholder <div> and put your own
-   <img src="assets/images/your-file.jpg" alt="..."> in its place,
-   using the same dimensions noted in the label.
+   2. IMAGE PLACEHOLDERS + MOTION
+   TO REPLACE a placeholder: delete the .img-placeholder <div> and drop
+   an <img src="assets/images/your-file.png" alt="..."> in its place.
    ===================================================================== */
 .img-placeholder{
   width:100%;
@@ -71,15 +89,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
   padding: 16px;
   min-height: 100px;
 }
-.img-placeholder .ph-icon{
-  width:34px; height:34px;
-  opacity:0.55;
-}
-.img-placeholder .ph-label{
-  font-size:13px;
-  font-weight:700;
-  letter-spacing:0.02em;
-}
+.img-placeholder .ph-icon{ width:34px; height:34px; opacity:0.55; }
+.img-placeholder .ph-label{ font-size:13px; font-weight:700; letter-spacing:0.02em; }
 .img-placeholder .ph-dims{
   font-size:11.5px;
   font-family: monospace;
@@ -89,19 +100,13 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
   border-radius: 100px;
 }
 
-/* =====================================================================
-   MOTION
-   ===================================================================== */
 @media (prefers-reduced-motion: no-preference){
   .reveal{
     opacity:0;
     transform: translateY(28px);
     transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
   }
-  .reveal.in{
-    opacity:1;
-    transform: translateY(0);
-  }
+  .reveal.in{ opacity:1; transform: translateY(0); }
   .reveal-stagger > *{ transition-delay: calc(var(--i, 0) * 90ms); }
 }
 @media (prefers-reduced-motion: reduce){
@@ -109,8 +114,10 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
 }
 
 /* =====================================================================
-   EYEBROW LABELS
+   3. LABELS / HEADER / BUTTONS
    ===================================================================== */
+
+/* Small caps label above a headline. (No leading dash — client request.) */
 .eyebrow{
   font-family: var(--font-body);
   font-size: 12.5px;
@@ -122,18 +129,8 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
   align-items:center;
   gap:10px;
 }
-.eyebrow::before{
-  content:'';
-  width:18px; height:1px;
-  background: var(--clay-dark);
-  display:inline-block;
-}
 
-/* =====================================================================
-   PLAIN LABEL
-   Simple styled text label (not the small-caps "eyebrow" tag style).
-   Used where a plain, readable line is wanted above a headline.
-   ===================================================================== */
+/* Plain readable line above a headline (homepage hero). */
 .plain-label{
   font-family: var(--font-body);
   font-size: 15px;
@@ -142,9 +139,6 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; }
   margin-bottom: 14px;
 }
 
-/* =====================================================================
-   HEADER / NAVIGATION
-   ===================================================================== */
 header{
   position: fixed;
   top:0; left:0; right:0;
@@ -155,34 +149,19 @@ header{
   border-bottom: 1px solid transparent;
   transition: border-color .3s ease, background .3s ease;
 }
-header.scrolled{
-  border-bottom: 1px solid var(--line);
-}
+header.scrolled{ border-bottom: 1px solid var(--line); }
+
 .nav-inner{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  height: 116px;
+  height: 148px;              /* tall enough for the enlarged logo */
 }
+.logo{ display:flex; align-items:center; gap:10px; }
+.logo img{ height: 78px; width:auto; display:block; }
+header .logo img{ height: 124px; }   /* enlarged logo — client request */
 
-/* Logo lockup: image + wordmark fallback text removed; image only */
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.logo img{
-  height: 78px;
-  width: auto;
-  display:block;
-}
-header .logo img{ height: 104px; }
-
-nav.primary-nav{
-  display:flex;
-  align-items:center;
-  gap:40px;
-}
+nav.primary-nav{ display:flex; align-items:center; gap:40px; }
 nav.primary-nav a{
   font-size: 14px;
   font-weight:500;
@@ -201,14 +180,11 @@ nav.primary-nav a::after{
   background: var(--clay);
   transition: width .3s ease;
 }
-nav.primary-nav a:hover::after{ width:100%; }
+nav.primary-nav a:hover::after,
 nav.primary-nav a.active::after{ width:100%; }
 
-.header-cta{
-  display:flex;
-  align-items:center;
-  gap:28px;
-}
+.header-cta{ display:flex; align-items:center; gap:28px; }
+
 .btn{
   display:inline-flex;
   align-items:center;
@@ -222,54 +198,26 @@ nav.primary-nav a.active::after{ width:100%; }
   transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease;
   white-space:nowrap;
 }
-.btn-primary{
-  background: var(--navy);
-  color: var(--sand-soft);
-}
+.btn-primary{ background: var(--navy); color: var(--sand-soft); }
 .btn-primary:hover{
   background: var(--clay-dark);
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(91,155,203,0.32);
 }
-.btn-outline{
-  border: 1.4px solid var(--navy);
-  color: var(--navy);
-  background: transparent;
-}
-.btn-outline:hover{
-  background: var(--navy);
-  color: var(--sand-soft);
-  transform: translateY(-2px);
-}
-.btn-clay{
-  background: #fff;
-  color: var(--navy);
-  border: 1.4px solid var(--line);
-}
+.btn-outline{ border: 1.4px solid var(--navy); color: var(--navy); background: transparent; }
+.btn-outline:hover{ background: var(--navy); color: var(--sand-soft); transform: translateY(-2px); }
+.btn-clay{ background:#fff; color: var(--navy); border: 1.4px solid var(--line); }
 .btn-clay:hover{
   background: var(--clay);
-  color: #fff;
+  color:#fff;
   border-color: var(--clay);
   transform: translateY(-2px);
   box-shadow: 0 12px 26px rgba(77,106,146,0.32);
 }
-.btn-ghost-light{
-  border: 1.4px solid rgba(255,255,255,0.55);
-  color: var(--white);
-}
-.btn-ghost-light:hover{
-  background: rgba(255,255,255,0.12);
-  border-color: var(--white);
-}
-.btn-white{
-  background:#fff;
-  color: var(--navy);
-}
-.btn-white:hover{
-  background: var(--clay);
-  color:#fff;
-  transform: translateY(-2px);
-}
+.btn-ghost-light{ border: 1.4px solid rgba(255,255,255,0.55); color: var(--white); }
+.btn-ghost-light:hover{ background: rgba(255,255,255,0.12); border-color: var(--white); }
+.btn-white{ background:#fff; color: var(--navy); }
+.btn-white:hover{ background: var(--clay); color:#fff; transform: translateY(-2px); }
 
 .menu-toggle{
   display:none;
@@ -285,10 +233,10 @@ nav.primary-nav a.active::after{ width:100%; }
 }
 
 /* =====================================================================
-   PAGE HERO (used on inner pages: services, pricing, about, contact, etc)
+   4. PAGE HERO (inner pages) + HOMEPAGE HERO
    ===================================================================== */
 .page-hero{
-  padding: 184px 0 80px;
+  padding: 184px 0 32px;   /* tight bottom — titles sit close to their text */
   background: linear-gradient(180deg, #EEF2F7 0%, var(--sand-soft) 100%);
 }
 .page-hero .eyebrow{ justify-content:flex-start; margin-bottom:18px; }
@@ -308,6 +256,27 @@ nav.primary-nav a.active::after{ width:100%; }
   max-width:600px;
   margin-top:20px;
 }
+
+/* Centered variant (Services) */
+.page-hero.center{ text-align:center; }
+.page-hero.center .breadcrumb{ justify-content:center; }
+.page-hero.center .eyebrow{ justify-content:center; }
+.page-hero.center h1,
+.page-hero.center p.lede{ margin-left:auto; margin-right:auto; }
+
+/* Title sized to match the in-page section headings (so "Group Classes"
+   and "Private Sessions" read as the same size). */
+.page-hero h1.match-h2{ font-size: clamp(32px, 3.6vw, 46px); line-height:1.14; }
+
+/* Long title that should stay on ONE line on desktop (Teacher Training) */
+.page-hero h1.one-line{ max-width:none; font-size: clamp(26px, 3.3vw, 44px); }
+@media (min-width: 1025px){
+  .page-hero h1.one-line{ white-space: nowrap; }
+}
+
+/* Extra-tight hero (Pricing — client wanted less space before Memberships) */
+.page-hero.tight{ padding-bottom: 16px; }
+
 .breadcrumb{
   display:flex;
   align-items:center;
@@ -319,13 +288,11 @@ nav.primary-nav a.active::after{ width:100%; }
 .breadcrumb a{ color: var(--navy); font-weight:600; }
 .breadcrumb span{ color: var(--sage); }
 
-/* =====================================================================
-   HERO (homepage)
-   ===================================================================== */
+/* ---- homepage hero ---- */
 .hero{
   position:relative;
   padding: 184px 0 0;
-  background: var(--sand-soft);
+  background: linear-gradient(180deg, #EEF2F7 0%, var(--sand-soft) 100%);
   overflow:hidden;
 }
 .hero-grid{
@@ -334,11 +301,7 @@ nav.primary-nav a.active::after{ width:100%; }
   gap: 64px;
   align-items:center;
 }
-.hero-copy{
-  padding-bottom: 96px;
-  position:relative;
-  z-index:2;
-}
+.hero-copy{ padding-bottom: 96px; position:relative; z-index:2; }
 .hero-copy h1{
   font-family: var(--font-display);
   font-weight:700;
@@ -348,15 +311,11 @@ nav.primary-nav a.active::after{ width:100%; }
   margin: 6px 0 26px;
   letter-spacing: -0.01em;
 }
-.mixx-word{
-  white-space: nowrap;
+.mixx-word{ white-space: nowrap; display:inline-block; }
+.hero-mixx-logo{
   display:inline-block;
-}
-/* Full MIXX logo inline inside hero h1 */
-.hero-mixx-logo {
-  display: inline-block;
   height: 0.92em;
-  width: auto;
+  width:auto;
   vertical-align: middle;
   transform: translateY(-0.05em);
   margin: 0 0.08em;
@@ -364,13 +323,10 @@ nav.primary-nav a.active::after{ width:100%; }
 .hero-xx-mark{
   display:inline-block;
   height: 0.78em;
-  width: auto;
+  width:auto;
   vertical-align: middle;
   transform: translateY(-0.08em);
   margin-left: 0.04em;
-}
-.mixx-word.dark-bg .hero-xx-mark{
-  filter: drop-shadow(0 0 0 rgba(255,255,255,1)) drop-shadow(0 0 5px rgba(255,255,255,0.85)) drop-shadow(0 0 1px rgba(255,255,255,1));
 }
 .hero-copy p.lede{
   font-size: 18px;
@@ -379,77 +335,15 @@ nav.primary-nav a.active::after{ width:100%; }
   max-width: 470px;
   margin-bottom: 38px;
 }
-.hero-actions{
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  margin-bottom: 52px;
-}
-.hero-meta{
-  display:flex;
-  gap: 38px;
-  flex-wrap:wrap;
-}
-.hero-meta .stat{
-  display:flex;
-  flex-direction:column;
-}
-.hero-meta .stat .n{
-  font-family: var(--font-display);
-  font-size: 30px;
-  color: var(--navy);
-  font-weight:700;
-}
-.hero-meta .stat .l{
-  font-size: 12.5px;
-  color: var(--ink-soft);
-  letter-spacing:0.02em;
-  margin-top:2px;
-}
+.hero-actions{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom: 52px; }
+.hero-visual{ position:relative; border-radius: 6px; overflow:hidden; }
 
-.hero-visual{
-  position:relative;
-  height: 620px;
-  border-radius: 6px;
-  overflow:hidden;
-}
-.hero-dotcard{
-  position:absolute;
-  left: 28px;
-  bottom: 28px;
-  background: rgba(255,255,255,0.94);
-  backdrop-filter: blur(10px);
-  border-radius: 4px;
-  padding: 20px 22px;
-  display:flex;
-  align-items:center;
-  gap:16px;
-  box-shadow: 0 24px 48px rgba(52,74,104,0.3);
-  z-index:3;
-}
 .dotgroup{ display:flex; gap:6px; }
 .dotgroup .d{ width:9px; height:9px; border-radius:50%; background: var(--line); }
 .dotgroup .d.on{ background: var(--clay); }
-.hero-dotcard .txt{ font-size:13px; line-height:1.4; color: var(--navy); font-weight:600; max-width:150px;}
-.hero-dotcard .txt span{ display:block; font-weight:400; color: var(--ink-soft); font-size:12px; margin-top:2px; }
+.hero-dotcard{ display:none; }   /* overlay card retired */
 
-.hero-tag-floating{
-  position:absolute;
-  top: 38px;
-  right: -18px;
-  background: var(--navy);
-  color:#fff;
-  font-family: var(--font-cursive);
-  font-style:normal;
-  font-size: 19px;
-  padding: 14px 26px;
-  border-radius: 100px 4px 100px 100px;
-  box-shadow: 0 18px 30px rgba(77,106,146,0.35);
-  transform: rotate(4deg);
-  z-index:3;
-}
-
-/* ===== marquee strip ===== */
+/* ---- marquee strip ---- */
 .strip{
   background: var(--navy);
   color: rgba(247,243,236,0.78);
@@ -474,25 +368,120 @@ nav.primary-nav a.active::after{ width:100%; }
   align-items:center;
   gap:64px;
 }
-.strip-track span::after{
-  content:'◆';
-  color: var(--clay);
-  font-size:8px;
-}
+.strip-track span::after{ content:'◆'; color: var(--clay); font-size:8px; }
 @keyframes scroll-strip{
   from{ transform: translateX(0); }
   to{ transform: translateX(-50%); }
 }
 
 /* =====================================================================
-   SECTION BASE
+   5. PAGE SECTION SYSTEM
+   Used by services.html, teacher-training.html, pricing.html.
+   Replaces the old pile of inline style="..." attributes.
    ===================================================================== */
 section{ position:relative; }
-.section-pad{ padding: 128px 0; }
-.section-head{
-  max-width: 640px;
-  margin-bottom: 64px;
+
+.section{ padding: 72px 0; }          /* the standard, even rhythm */
+.section.sand{ background: var(--sand); }
+.section.tight{ padding-top: 40px; }  /* sits close under a hero */
+.section.snug{ padding-top: 24px; }   /* even closer (Pricing) */
+.section.flush-top{ padding-top: 0; }
+.section.flush-bottom{ padding-bottom: 0; }
+
+/* Centered heading block. h1 and h2 render identically here, so a page
+   title and a mid-page title look like a matched pair. */
+.head{
+  max-width: 900px;
+  margin: 0 auto 32px;
+  text-align:center;
 }
+.head .eyebrow{ justify-content:center; margin-bottom:14px; }
+.head h1,
+.head h2{
+  font-family: var(--font-display);
+  font-weight:700;
+  font-size: clamp(32px, 3.6vw, 46px);
+  line-height:1.14;
+  color: var(--navy);
+  letter-spacing:-0.01em;
+}
+.head .sub{
+  font-size:17px;
+  line-height:1.7;
+  color: var(--ink-soft);
+  margin-top:14px;
+}
+
+/* Wide centered intro paragraph. */
+.lede-block{
+  max-width: 900px;
+  margin: 0 auto 40px;
+  text-align:center;
+  font-size:19px;
+  line-height:1.7;
+  color: var(--ink-soft);
+}
+
+/* The navy paragraph that sits beside a photo. */
+.body-lead{
+  font-size:18px;
+  line-height:1.8;
+  color: var(--navy);
+  font-weight:600;
+}
+.body-lead + .btn{ margin-top:32px; }
+
+/* Centered "View the schedule / contact us" line. */
+.note-line{
+  text-align:center;
+  margin-top: 40px;
+  font-size:18px;
+  color: var(--ink-soft);
+}
+.link-inline{
+  color: var(--navy);
+  font-weight:600;
+  text-decoration:underline;
+}
+.link-inline:hover{ color: var(--clay-dark); }
+
+/* Standalone centered photo. Always the 7:6 shape of a 700x600 photo,
+   so the image is never cropped. */
+.figure{
+  max-width: 760px;
+  margin: 40px auto 0;
+  border-radius:6px;
+  overflow:hidden;
+  aspect-ratio: var(--photo-ratio);
+}
+.figure.narrow{ max-width: 560px; }
+.figure img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Policy text block (Pricing). */
+.policy{
+  max-width: 780px;
+  margin: 0 auto;
+  text-align:center;
+}
+.policy p{
+  font-size:17px;
+  line-height:1.7;
+  color: var(--ink-soft);
+  margin-bottom:28px;
+}
+.policy p strong{ color: var(--navy); }
+.policy .final{
+  font-weight:700;
+  color: var(--navy);
+  font-size:19px;
+  margin-bottom:0;
+}
+
+/* =====================================================================
+   6. HOMEPAGE COMPONENTS
+   ===================================================================== */
+.section-pad{ padding: 128px 0; }
+.section-head{ max-width: 640px; margin-bottom: 64px; }
 .section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
 .section-head h2{
   font-family: var(--font-display);
@@ -510,17 +499,13 @@ section{ position:relative; }
   margin-top: 18px;
 }
 
-/* =====================================================================
-   INTRO / PHILOSOPHY (homepage)
-   ===================================================================== */
-.intro.section-pad{ background: var(--sand-soft); padding-top: 30px !important; }
+.intro.section-pad{ background: var(--sand-soft); }
 .intro-grid{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items:center;
 }
-.intro-grid .col-left{ position:static; }
 .intro-body p{
   font-size: 18px;
   line-height: 1.85;
@@ -528,107 +513,8 @@ section{ position:relative; }
   margin-bottom: 24px;
 }
 .intro-body p strong{ color: var(--navy); font-weight:600; }
-.intro-divider{
-  margin: 36px 0;
-  width:64px;
-  height:2px;
-  background: var(--clay);
-}
-.session-motif{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin-top:28px;
-}
-.session-motif .dotgroup .d{ width:11px; height:11px; }
-.session-motif p{
-  font-size:13.5px;
-  color: var(--sage-deep);
-  font-weight:600;
-  letter-spacing:0.02em;
-  margin:0;
-}
 
-/* =====================================================================
-   PROGRAMS / SERVICE CARDS
-   ===================================================================== */
-.programs{ background: var(--sand); }
-.program-grid{
-  display:grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-}
-.program-card{
-  background: var(--white);
-  border-radius: 6px;
-  padding: 40px 34px 38px;
-  border: 1px solid var(--line);
-  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
-  position:relative;
-  overflow:hidden;
-}
-.program-card::before{
-  content:'';
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:3px;
-  background: linear-gradient(90deg, var(--clay), var(--sage));
-  transform: scaleX(0);
-  transform-origin:left;
-  transition: transform .4s ease;
-}
-.program-card:hover{
-  transform: translateY(-8px);
-  box-shadow: 0 30px 60px rgba(52,74,104,0.12);
-  border-color: transparent;
-}
-.program-card:hover::before{ transform: scaleX(1); }
-.program-icon{
-  width: 52px; height:52px;
-  border-radius: 50%;
-  background: var(--sand);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom: 26px;
-}
-.program-icon svg{ width:24px; height:24px; stroke: var(--navy); }
-.program-card h3{
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight:700;
-  color: var(--navy);
-  margin-bottom: 12px;
-}
-.program-card p{
-  font-size: 15px;
-  line-height:1.7;
-  color: var(--ink-soft);
-}
-.program-card .tag{
-  display:inline-block;
-  margin-top:18px;
-  font-size: 11.5px;
-  font-weight:700;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  color: var(--clay-dark);
-}
-.program-card a.card-link{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  margin-top:20px;
-  font-size:13.5px;
-  font-weight:600;
-  color: var(--navy);
-}
-.program-card a.card-link svg{ width:14px; height:14px; stroke:var(--navy); transition: transform .25s ease; }
-.program-card a.card-link:hover svg{ transform: translateX(3px); }
-
-/* =====================================================================
-   ART BAND
-   ===================================================================== */
+/* ---- art band ("MIXX Your Fitness, and MAXXimize Your Results") ---- */
 .art-band{
   padding: 30px 0 20px;
   position: relative;
@@ -638,13 +524,12 @@ section{ position:relative; }
 .art-band-content{
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 0 24px;
 }
-.art-band-content .eyebrow{ color: var(--clay); justify-content:center; }
-.art-band-content .eyebrow::before{ display:none; }
 .maxximize-line{
   margin: 0;
   padding: 0;
@@ -671,94 +556,33 @@ section{ position:relative; }
   line-height: 1.2;
   white-space: nowrap;
 }
-.maxximize-maxx-word{
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
-}
+.maxximize-maxx-word{ display:inline-flex; align-items:center; white-space:nowrap; }
 .maxximize-mixx-logo{
-  height: 48px;
-  width: 115px;
-  display: inline-block;
-  vertical-align: middle;
-  object-fit: contain;
-  margin-right: 8px;
+  height: 48px; width: 115px;
+  display:inline-block; vertical-align:middle;
+  object-fit:contain; margin-right: 8px;
 }
 .maxximize-m-mark{
-  height: 48px;
-  width: 36px;
-  display: inline-block;
-  vertical-align: middle;
-  object-fit: contain;
-  margin-left: 16px;
+  height: 48px; width: 36px;
+  display:inline-block; vertical-align:middle;
+  object-fit:contain; margin-left: 16px;
 }
 .maxximize-xx-mark{
-  height: 49px;
-  width: 70px;
-  display: inline-block;
-  vertical-align: middle;
-  object-fit: contain;
+  height: 49px; width: 70px;
+  display:inline-block; vertical-align:middle;
+  object-fit:contain;
 }
-
-/* =====================================================================
-   METHOD (homepage + about)
-   ===================================================================== */
-.method{ background: var(--sand-soft); }
-.method-row{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items:center;
-  margin-bottom: 100px;
-}
-.method-row:last-child{ margin-bottom:0; }
-.method-row.reverse .method-visual{ order:2; }
-.method-row.reverse .method-text{ order:1; }
-.method-visual{
-  position:relative;
-  height: 360px;
-  border-radius: 6px;
-  overflow:hidden;
-}
-.method-visual .num{
-  position:absolute;
-  bottom:24px; right:24px;
-  font-family: var(--font-cursive);
-  font-style:normal;
-  font-size:52px;
-  color: rgba(255,255,255,0.6);
-  line-height:1;
-  z-index:2;
-  pointer-events:none;
-}
-.method-text .eyebrow{ margin-bottom:16px; }
-.method-text h3{
-  font-family: var(--font-display);
-  font-weight:700;
-  font-size: clamp(26px, 2.8vw, 34px);
-  color: var(--navy);
-  line-height:1.2;
-  margin-bottom:18px;
-}
-/* Points 4 & 5 — client-specified font/size/weight/color */
-.method-body-text {
-  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-  font-weight: 700;
-  font-size: 44px;
-  line-height: 1.6;
-  color: #25318D;
-  font-style: normal;
-}
-
-.method-text p{
-  font-size:16.5px;
-  line-height:1.75;
+/* Supporting line under the MAXXimize headline. */
+.art-band-sub{
+  max-width: 820px;
+  margin: 22px auto 0;
+  font-size: 18px;
+  line-height: 1.75;
   color: var(--ink-soft);
+  text-align:center;
 }
 
-/* =====================================================================
-   GETTING STARTED (homepage)
-   ===================================================================== */
+/* ---- getting started ---- */
 .start{ background: var(--navy); color: var(--sand-soft); position:relative; overflow:hidden; }
 .start::before{
   content:'';
@@ -801,14 +625,6 @@ section{ position:relative; }
   background: rgba(255,255,255,0.38);
   border-color: rgba(255,255,255,0.6);
 }
-.start-card .step-no{
-  font-family: var(--font-cursive);
-  font-style:normal;
-  font-size: 19px;
-  color: var(--clay);
-  margin-bottom: 18px;
-  display:block;
-}
 .start-card h3{
   font-family: var(--font-display);
   font-weight:700;
@@ -821,20 +637,85 @@ section{ position:relative; }
   color: rgba(247,243,236,0.95);
   margin-bottom: 28px;
 }
-.start-card .feat-list{ margin-bottom:28px; }
-.start-card .feat-list li{
-  font-size:14px;
-  color: rgba(247,243,236,0.82);
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:10px;
+
+/* ---- programs (kept for reuse) ---- */
+.programs{ background: var(--sand); }
+.program-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:28px; }
+.program-card{
+  background: var(--white);
+  border-radius: 6px;
+  padding: 40px 34px 38px;
+  border: 1px solid var(--line);
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+  position:relative;
+  overflow:hidden;
 }
-.start-card .feat-list li svg{ width:15px; height:15px; stroke:var(--clay); flex-shrink:0; margin-top:2px; }
+.program-card:hover{
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(52,74,104,0.12);
+  border-color: transparent;
+}
+.program-card h3{
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight:700;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+.program-card p{ font-size: 15px; line-height:1.7; color: var(--ink-soft); }
 
 /* =====================================================================
-   GENERIC CONTENT BLOCKS (about page, etc.)
+   7. SHARED COMPONENTS
    ===================================================================== */
+
+/* ---- method row: photo one side, text the other ---- */
+.method{ background: var(--sand-soft); }
+.method-row{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items:center;
+  margin-bottom: 72px;
+}
+.method-row:last-child{ margin-bottom:0; }
+.method-row.reverse .method-visual{ order:2; }
+.method-row.reverse .method-text{ order:1; }
+
+/* The photo box. 7:6 = the shape of a 700x600 photo, so object-fit has
+   nothing left to crop. Fixes images looking "cut off" on some screens. */
+.method-visual{
+  position:relative;
+  aspect-ratio: var(--photo-ratio);
+  border-radius: 6px;
+  overflow:hidden;
+}
+.method-visual img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.method-text h3{
+  font-family: var(--font-display);
+  font-weight:700;
+  font-size: clamp(26px, 2.8vw, 34px);
+  color: var(--navy);
+  line-height:1.2;
+  margin-bottom:18px;
+}
+.method-text p{ font-size:16.5px; line-height:1.75; color: var(--ink-soft); }
+
+/* Homepage text beside the photos — the clean navy style the client
+   picked (was a 44px block; changed at client request). */
+.method-body-text{
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--navy);
+}
+
+/* ---- generic content / team ---- */
 .content-block{ background: var(--sand-soft); }
 .content-grid-2{
   display:grid;
@@ -848,26 +729,11 @@ section{ position:relative; }
   color: var(--ink-soft);
   margin-bottom:18px;
 }
-.content-grid-2 .visual{
-  height: 420px;
-  border-radius:6px;
-  overflow:hidden;
-}
+.content-grid-2 .visual{ height: 420px; border-radius:6px; overflow:hidden; }
 
-.team-grid{
-  display:grid;
-  grid-template-columns: repeat(3,1fr);
-  gap:28px;
-}
-.team-card{
-  text-align:center;
-}
-.team-card .photo{
-  height: 280px;
-  border-radius:6px;
-  overflow:hidden;
-  margin-bottom:20px;
-}
+.team-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:28px; }
+.team-card{ text-align:center; }
+.team-card .photo{ height: 280px; border-radius:6px; overflow:hidden; margin-bottom:20px; }
 .team-card h4{
   font-family: var(--font-display);
   font-size:19px;
@@ -875,14 +741,9 @@ section{ position:relative; }
   color:var(--navy);
   margin-bottom:4px;
 }
-.team-card p{
-  font-size:13.5px;
-  color: var(--ink-soft);
-}
+.team-card p{ font-size:13.5px; color: var(--ink-soft); }
 
-/* =====================================================================
-   STAT STRIP
-   ===================================================================== */
+/* ---- stat strip ---- */
 .stat-strip{
   background: var(--sand);
   padding: 56px 0;
@@ -901,16 +762,9 @@ section{ position:relative; }
   color: var(--navy);
   font-weight:700;
 }
-.stat-strip .l{
-  font-size:13px;
-  color: var(--ink-soft);
-  margin-top:6px;
-  letter-spacing:0.02em;
-}
+.stat-strip .l{ font-size:13px; color: var(--ink-soft); margin-top:6px; letter-spacing:0.02em; }
 
-/* =====================================================================
-   SCHEDULE TABLE (schedule page)
-   ===================================================================== */
+/* ---- schedule table ---- */
 .schedule-table{
   width:100%;
   border-collapse: collapse;
@@ -937,26 +791,9 @@ section{ position:relative; }
 }
 .schedule-table tr:last-child td{ border-bottom:none; }
 .schedule-table tr:hover td{ background: var(--sand); }
-.schedule-table .class-tag{
-  display:inline-block;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:0.04em;
-  text-transform:uppercase;
-  color: var(--clay-dark);
-  background: rgba(119,180,224,0.12);
-  padding:3px 10px;
-  border-radius:100px;
-}
 
-/* =====================================================================
-   CONTACT FORM (contact page)
-   ===================================================================== */
-.contact-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-}
+/* ---- contact form ---- */
+.contact-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 64px; }
 .contact-form{
   background: var(--white);
   border: 1px solid var(--line);
@@ -970,7 +807,6 @@ section{ position:relative; }
   font-weight:600;
   color: var(--navy);
   margin-bottom:8px;
-  letter-spacing:0.01em;
 }
 .form-row input,
 .form-row textarea,
@@ -993,11 +829,7 @@ section{ position:relative; }
   box-shadow: 0 0 0 3px rgba(119,180,224,0.18);
 }
 .form-row textarea{ min-height: 120px; resize:vertical; }
-.form-grid-2{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
+.form-grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
 .contact-info-card{
   background: var(--navy);
@@ -1020,57 +852,28 @@ section{ position:relative; }
   line-height:1.6;
   color: rgba(255,255,255,0.85);
 }
-.contact-info-card .row svg{ width:18px; height:18px; stroke:var(--clay); flex-shrink:0; margin-top:2px; }
 .contact-info-card .row a{ color:#fff; font-weight:600; }
-.map-placeholder{
-  height: 280px;
-  border-radius:6px;
-  overflow:hidden;
-}
+.map-placeholder{ height: 280px; border-radius:6px; overflow:hidden; }
 
-/* =====================================================================
-   TESTIMONIAL (kept in CSS for reuse; remove section markup if unused)
-   ===================================================================== */
+/* ---- testimonial (kept for reuse) ---- */
 .testimonial{ background: var(--sand); }
-.testi-wrap{
-  max-width: 760px;
-  margin:0 auto;
-  text-align:center;
-}
+.testi-wrap{ max-width: 760px; margin:0 auto; text-align:center; }
 .testi-quote{
   font-family: var(--font-cursive);
-  font-style:normal;
   font-weight:400;
   font-size: clamp(26px,3.2vw,34px);
   line-height:1.5;
   color: var(--navy);
 }
-.testi-attrib{
-  margin-top: 28px;
-  font-size: 14px;
-  font-weight:600;
-  color: var(--ink-soft);
-  letter-spacing:0.02em;
-}
-.testi-stars{
-  display:flex;
-  justify-content:center;
-  gap:5px;
-  margin-bottom: 28px;
-}
-.testi-stars svg{ width:18px; height:18px; fill: var(--clay); }
+.testi-attrib{ margin-top: 28px; font-size: 14px; font-weight:600; color: var(--ink-soft); }
 
-/* =====================================================================
-   PRICING (kept in CSS for reuse; remove section markup if unused)
-   ===================================================================== */
-.pricing-band{
-  background: var(--sand-soft);
-}
-.price-grid{
-  display:grid;
-  grid-template-columns: repeat(3,1fr);
-  gap:28px;
-}
+/* ---- pricing ---- */
+.pricing-band{ background: var(--sand-soft); }
+.price-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:28px; }
+.price-grid.cols-4{ grid-template-columns: repeat(4,1fr); }
+.price-grid.cols-2{ grid-template-columns: repeat(2,1fr); max-width:640px; margin:0 auto; }
+.price-grid.cols-1{ grid-template-columns: 1fr; max-width:340px; margin:0 auto 32px; }
+
 .price-card{
   border: 1px solid var(--line);
   border-radius:6px;
@@ -1087,7 +890,7 @@ section{ position:relative; }
   position:relative;
   transform: scale(1.02);
 }
-.price-card.featured .price-name, .price-card.featured h3{ color: var(--sand-soft); }
+.price-card.featured .price-name{ color: var(--sand-soft); }
 .price-card.featured .price-desc{ color: rgba(247,243,236,0.7); }
 .price-card .ribbon{
   position:absolute;
@@ -1116,26 +919,10 @@ section{ position:relative; }
   margin-bottom:4px;
 }
 .price-amt span{ font-size:14px; font-weight:400; opacity:.7; }
-.price-desc{
-  font-size:14px;
-  color: var(--ink-soft);
-  margin-bottom:24px;
-}
-.price-feats{ margin-bottom:32px; flex-grow:1; }
-.price-feats li{
-  font-size:14px;
-  display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:12px;
-  line-height:1.4;
-}
-.price-feats li svg{ width:14px; height:14px; stroke: var(--clay); flex-shrink:0; margin-top:3px; }
-.price-card.featured .price-feats li svg{ stroke: var(--clay); }
+.price-desc{ font-size:14px; color: var(--ink-soft); margin-bottom:24px; }
+.price-card .btn{ margin-top:auto; }
 
-/* =====================================================================
-   FINAL CTA
-   ===================================================================== */
+/* ---- final CTA ---- */
 .final-cta{
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy-deep) 100%);
   color:#fff;
@@ -1151,8 +938,6 @@ section{ position:relative; }
   background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 26px);
 }
 .final-cta-inner{ position:relative; z-index:2; max-width:680px; margin:0 auto; }
-.final-cta .eyebrow{ color: rgba(255,255,255,0.85); justify-content:center; }
-.final-cta .eyebrow::before{ background: rgba(255,255,255,0.85); }
 .final-cta h2{
   font-family: var(--font-display);
   font-weight:700;
@@ -1160,22 +945,10 @@ section{ position:relative; }
   margin: 18px 0 22px;
   line-height:1.16;
 }
-.final-cta p{
-  font-size:17px;
-  opacity:0.92;
-  margin-bottom:36px;
-  line-height:1.6;
-}
-.final-cta .actions{
-  display:flex;
-  gap:16px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
+.final-cta p{ font-size:17px; opacity:0.92; margin-bottom:36px; line-height:1.6; }
+.final-cta .actions{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
 
-/* =====================================================================
-   FOOTER
-   ===================================================================== */
+/* ---- footer ---- */
 footer{
   background: var(--navy-deep);
   color: rgba(247,243,236,0.7);
@@ -1188,10 +961,7 @@ footer{
   padding-bottom: 64px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
-.footer-brand .logo img{
-  height: 46px;
-  filter: brightness(0) invert(1);
-}
+.footer-brand .logo img{ height: 46px; filter: brightness(0) invert(1); }
 .footer-brand p{
   font-size:14px;
   line-height:1.7;
@@ -1234,8 +1004,12 @@ footer{
   line-height:1.7;
   margin-bottom:16px;
 }
-.footer-col .contact-line strong{ display:block; color: var(--sand-soft); font-weight:500; margin-bottom:2px;}
-
+.footer-col .contact-line strong{
+  display:block;
+  color: var(--sand-soft);
+  font-weight:500;
+  margin-bottom:2px;
+}
 .footer-bottom{
   padding: 26px 0 30px;
   display:flex;
@@ -1246,12 +1020,8 @@ footer{
   flex-wrap:wrap;
   gap:12px;
 }
-.footer-bottom a{ color: rgba(247,243,236,0.55); }
-.footer-bottom a:hover{ color: var(--clay); }
 
-/* =====================================================================
-   BACK TO TOP
-   ===================================================================== */
+/* ---- back to top ---- */
 .top-btn{
   position:fixed;
   bottom: 28px; right:28px;
@@ -1273,21 +1043,22 @@ footer{
 .top-btn svg{ width:18px; height:18px; stroke:#fff; }
 
 /* =====================================================================
-   RESPONSIVE
+   8. RESPONSIVE
    ===================================================================== */
 @media (max-width: 1024px){
   .wrap{ padding:0 24px; }
   nav.primary-nav{ gap:26px; }
   .hero-grid{ grid-template-columns:1fr; }
-  .hero-visual{ height: 460px; order:-1; }
+  .hero-visual{ order:-1; }
   .hero-copy{ padding-bottom:60px; }
   .intro-grid{ grid-template-columns:1fr; gap:40px; }
-  .intro-grid .col-left{ position:static; }
   .program-grid{ grid-template-columns: repeat(2,1fr); }
   .method-row{ grid-template-columns:1fr; gap:32px; }
-  .method-row.reverse .method-visual, .method-row.reverse .method-text{ order:initial; }
+  .method-row.reverse .method-visual,
+  .method-row.reverse .method-text{ order:initial; }
   .start-grid{ grid-template-columns:1fr; }
-  .price-grid{ grid-template-columns:repeat(2,1fr); }
+  .price-grid,
+  .price-grid.cols-4{ grid-template-columns:repeat(2,1fr); }
   .footer-grid{ grid-template-columns:1fr 1fr; gap:40px 24px; }
   .content-grid-2{ grid-template-columns:1fr; gap:36px; }
   .team-grid{ grid-template-columns:repeat(2,1fr); }
@@ -1314,63 +1085,38 @@ footer{
   }
   nav.primary-nav.open{ transform: translateX(0); }
   nav.primary-nav a{ color: rgba(247,243,236,0.85); font-size:18px; }
-  nav.primary-nav a:hover{ color:#fff; }
+  nav.primary-nav a:hover,
   nav.primary-nav a.active{ color:#fff; }
   .header-cta .btn-outline{ display:none; }
-  .nav-inner{ height:84px; }
+
+  .nav-inner{ height:88px; }
+  header .logo img{ height:60px; }
   .logo img{ height:56px; }
+
   .hero{ padding-top:144px; }
   .page-hero{ padding-top:144px; }
   .hero-copy{ padding-bottom:40px; }
   .hero-actions{ flex-direction:column; }
   .hero-actions .btn{ width:100%; }
-  .hero-meta{ gap:24px; }
-  .hero-visual{ height:380px; }
-  .hero-tag-floating{ display:none; }
+
+  .section{ padding: 56px 0; }
+  .section.tight{ padding-top: 32px; }
+  .section.snug{ padding-top: 20px; }
   .section-pad{ padding: 84px 0; }
   .section-head{ margin-bottom:42px; }
+  .head{ margin-bottom:26px; }
+  .lede-block{ font-size:17px; margin-bottom:32px; }
+  .figure{ margin-top:32px; }
+
   .program-grid{ grid-template-columns:1fr; }
-  .price-grid{ grid-template-columns:1fr; }
+  .price-grid,
+  .price-grid.cols-4,
+  .price-grid.cols-2{ grid-template-columns:1fr; max-width:420px; }
   .price-card.featured{ transform:none; }
+
   .footer-grid{ grid-template-columns:1fr; gap:36px; }
   .footer-bottom{ flex-direction:column; align-items:flex-start; }
-  .art-band{ padding: 20px 0 16px; }
-  .maxximize-text{ font-size: 32px; }
-  .maxximize-mixx-logo{ height: 38px; width: 92px; }
-  .maxximize-m-mark{ height: 38px; width: 29px; }
-  .maxximize-xx-mark{ height: 39px; width: 56px; }
-  .final-cta{ padding:80px 0; }
-  .team-grid{ grid-template-columns:1fr; }
-  .stat-strip .wrap{ grid-template-columns:1fr 1fr; }
-  .form-grid-2{ grid-template-columns:1fr; }
-}
 
-:focus-visible{
-  outline: 2.5px solid var(--clay);
-  outline-offset: 3px;
-}
-
-/* Mobile — art-band heading */
-@media (max-width: 480px){
-  .maxximize-text{ font-size: 22px; }
-  .maxximize-mixx-logo{ height: 26px; width: 63px; }
-  .maxximize-m-mark{ height: 26px; width: 20px; }
-  .maxximize-xx-mark{ height: 27px; width: 38px; }
-  .method-body-text{ font-size: 44px; }
-}
-
-/* =====================================================================
-   FIX 1 — Remove the dot-card overlay from the hero photo
-   ===================================================================== */
-.hero-dotcard{ display:none; }
-
-/* =====================================================================
-   FIX 2 — MIXX "...Maximize Your Results" headline on mobile
-   Lets the line wrap so "Results" drops to a new line instead of
-   running off the screen. The M / XX / MIXX letter-images stay glued
-   to their words (no space between them = no break point).
-   ===================================================================== */
-@media (max-width: 760px){
   .art-band{ padding: 24px 0 18px; }
   .art-band-content{ display:block; text-align:center; padding:0 18px; }
   .maxximize-line{
@@ -1381,14 +1127,17 @@ footer{
   }
   .maxximize-inline-wrap,
   .maxximize-maxx-word,
-  .maxximize-text{
-    display:inline;
-    white-space:normal;
-  }
+  .maxximize-text{ display:inline; white-space:normal; }
   .maxximize-text{ font-size:24px; }
   .maxximize-mixx-logo{ height:28px; width:auto; margin-right:5px; }
   .maxximize-m-mark{ height:28px; width:auto; margin-left:8px; }
   .maxximize-xx-mark{ height:29px; width:auto; }
+  .art-band-sub{ font-size:16px; margin-top:18px; }
+
+  .final-cta{ padding:80px 0; }
+  .team-grid{ grid-template-columns:1fr; }
+  .stat-strip .wrap{ grid-template-columns:1fr 1fr; }
+  .form-grid-2{ grid-template-columns:1fr; }
 }
 
 @media (max-width: 480px){
@@ -1397,102 +1146,36 @@ footer{
   .maxximize-m-mark{ height:23px; }
   .maxximize-xx-mark{ height:24px; }
 }
-/* =====================================================================
-   FIX 3 — Client adjustments
-   Homepage-only rules are scoped with #top so the other pages are
-   left exactly as they are.
-   ===================================================================== */
 
-/* 1 — Homepage text beside the photos → same as the Services page
-   (clean navy 18px, not the huge 44px block) */
-#top .method-body-text{
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 1.8;
-  color: var(--navy);
+:focus-visible{
+  outline: 2.5px solid var(--clay);
+  outline-offset: 3px;
 }
 
-/* 2 — Homepage: smaller, even spacing between the picture+text blocks */
+/* =====================================================================
+   9. PAGE-SPECIFIC TWEAKS
+   (Homepage and About still use the older .section-pad markup.)
+   ===================================================================== */
+
+/* Homepage: even, tighter rhythm between the photo+text blocks. */
 #top .method.section-pad{ padding: 72px 0; }
-#top .method-row{ margin-bottom: 72px; }
-#top .intro.section-pad{ padding: 72px 0 !important; }
+#top .intro.section-pad{ padding: 72px 0; }
 
-/* 3 — Remove the little dash before every subtitle (eyebrow) label */
-.eyebrow::before{ display: none; }
-
-/* 4 — Bigger header logo (with a matching bump on mobile) */
-.nav-inner{ height: 148px; }
-header .logo img{ height: 124px; }
-@media (max-width: 760px){
-  .nav-inner{ height: 88px; }
-  header .logo img{ height: 60px; }
-}
-
-/* 5 — Homepage top: same light bluish-white background as the inner pages */
-.hero{
-  background: linear-gradient(180deg, #EEF2F7 0%, var(--sand-soft) 100%);
-}
-/* =====================================================================
-   FIX 4 — Cleaner (not cramped) spacing on inner pages.
-   Scoped per page via the active nav link so other pages are untouched.
-   ===================================================================== */
-
-/* SERVICES — smaller gap between each heading and its text,
-   and less space between the Group Classes and Private Sessions blocks */
-body:has(nav a[href="services.html"].active) .section-head{ margin-bottom: 44px !important; }
-body:has(nav a[href="services.html"].active) .section-pad{ padding-bottom: 72px; }
-body:has(nav a[href="services.html"].active) .method.section-pad{ padding-top: 56px !important; }
-
-/* TEACHER TRAINING — trim the big space above "What to Expect"
-   (applies to the "Interested?" section too, and evens the bottom) */
-body:has(nav a[href="teacher-training.html"].active) .method.section-pad{
-  padding-top: 56px !important;
-  padding-bottom: 72px;
-}
-/* =====================================================================
-   FIX 5 — Smaller gap between the page heading/subtitle and the first
-   paragraph beneath it, on Services + Teacher Training. (Adds to FIX 4.)
-   ===================================================================== */
-
-/* Pull the first block up closer to the hero title
-   (Services: "Group Classes" → intro  •  Teacher Training: intro → "THE PROGRAM") */
-body:has(nav a[href="services.html"].active) .page-hero,
-body:has(nav a[href="teacher-training.html"].active) .page-hero{
-  padding-bottom: 40px;
-}
-
-/* Services: tighten the gap under each heading/subtitle
-   (e.g. the "Private Sessions" subtitle → the paragraph below it) */
-body:has(nav a[href="services.html"].active) .section-head{
-  margin-bottom: 28px !important;
-}
-/* =====================================================================
-   FIX 6 — Pricing: match the tighter hero→first-section spacing used
-   on the other inner pages.
-   ===================================================================== */
-
-/* Pull "Memberships" up closer to the hero title */
-body:has(nav a[href="pricing.html"].active) .page-hero{
-  padding-bottom: 40px;
-}
-body:has(nav a[href="pricing.html"].active) .pricing-band.section-pad:first-of-type{
-  padding-top: 56px !important;
-}
-/* =====================================================================
-   FIX 7 — About page:
-   (a) bios use the clean navy 18px text (same as Services/home photos)
-   (b) tighter hero→first-section gap, matching Pricing.
-   ===================================================================== */
-
-/* (a) Bio paragraphs → navy 18px, weight 600 */
+/* About: bios use the same clean navy text as the photo captions
+   elsewhere, and the first bio sits closer to the hero. */
 body:has(nav a[href="about.html"].active) .method-text p{
   font-size: 18px;
   line-height: 1.8;
   color: var(--navy);
   font-weight: 600;
 }
-
-/* (b) Pull the first bio block up closer to the "About Us" hero title */
-body:has(nav a[href="about.html"].active) .page-hero{ padding-bottom: 40px; }
 body:has(nav a[href="about.html"].active) .method.section-pad{ padding-top: 56px !important; }
+/* =====================================================================
+   ABOUT — instructor portraits are 480 x 560 (tall/vertical), not the
+   700 x 600 landscape used elsewhere. Matching the box to the photo's
+   shape means nothing gets cropped.
+   ===================================================================== */
+body:has(nav a[href="about.html"].active) .method-row .method-visual{
+  aspect-ratio: 480 / 560;
+  max-width: 480px;
+}
